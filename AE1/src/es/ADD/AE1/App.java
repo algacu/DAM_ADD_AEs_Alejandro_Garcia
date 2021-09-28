@@ -16,9 +16,7 @@ public class App {
 			StartCli(f);
 			
 		} else {
-			
 			System.out.println("El directorio o fichero pasado por parámetro no existe.");
-		
 		}
 	}
 	
@@ -28,7 +26,7 @@ public class App {
 		
 		Scanner teclado = new Scanner(System.in);
 		int numero = 0;
-		String continuar = "";
+		boolean continuar = true;
 		
 		System.out.println("Bienvenid@ a la App de gestión de directorios y ficheros.");
 		
@@ -41,17 +39,23 @@ public class App {
 					+ "\t4-Eliminar un fichero o carpeta\n"
 					+ "\t5-Renombrar un fichero o carpeta\n");
 			
-			while (numero < 1 || numero > 5) {
+			try {
+				while (numero < 1 || numero > 5) {
 				System.out.print("Introduce una opción (1-5): ");
 				numero = teclado.nextInt();
+				}
+			} catch (Exception e) {
+				System.out.println("\nError: el dato introducido no es un número.");
+				break;
 			}
 			
 			switch (numero) {
+			
 				case 1:
 					try {
 						GetInformacion(file);
 					} catch (Exception e) {
-						e.getMessage();
+						System.out.print(e.getMessage());
 					}
 					break;
 		
@@ -61,13 +65,23 @@ public class App {
 			}
 			
 			numero = 0;
-			System.out.print("\n¿Deseas realizar otra operación? (si / no): ");
-			continuar = teclado.next();
 			
-		} while (continuar.equals("si"));
+			System.out.print("\n¿Deseas realizar otra operación? (si / no): ");
+			String respuesta = teclado.next();
+
+			if (respuesta.equals("Si") || respuesta.equals("si") || respuesta.equals("SI")) {
+				continuar = true;
+			} else if (respuesta.equals("No") || respuesta.equals("no") || respuesta.equals("NO")) {
+				continuar = false;
+			} else {
+				System.out.print("\nComando incorrecto.\n");
+				continuar = false;
+			}
+			
+		} while (continuar == true);
 		
 		System.out.print("\nPrograma finalizado.");
-	
+		
 		teclado.close();
 		
 	}
@@ -129,13 +143,13 @@ public class App {
 	
 	public static void CreaCarpeta(File f) {
 		
-		Scanner teclado2 = new Scanner(System.in);
+		Scanner teclado = new Scanner(System.in);
 		
 		boolean fallo = false;
 		
 		do {
 			System.out.print("Introduce el nombre de la nueva carpeta: ");
-			String nombreCarpeta = teclado2.next();
+			String nombreCarpeta = teclado.next();
 
 			String ruta = f.toString();
 
@@ -146,15 +160,13 @@ public class App {
 			if (nuevaCarpeta.mkdir()) {
 				fallo = false;
 				System.out.println("Carpeta creada con éxito.");
-
 			}else{
 				fallo = true;
-				System.out.println("Error al crear la carpeta. La carpeta ya existe o el nombre no es válido.");  
+				System.out.println("Error al crear la carpeta. La carpeta ya existe o el nombre no es válido."); 
 			}
-
+			
 		} while(fallo == true);
 		
-		teclado2.close();
 	}
 	
 	
