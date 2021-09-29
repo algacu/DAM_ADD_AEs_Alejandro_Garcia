@@ -66,7 +66,11 @@ public class App {
 					break;
 					
 				case 4:
-					EliminaFichero(file);
+					Elimina(file);
+					break;
+					
+				case 5:
+					Renombra(file);
 					break;
 			}
 			
@@ -275,75 +279,166 @@ public class App {
 	
 	
 	
-public static void EliminaFichero(File f) {
-		
-	try {
-		
-		if (f.isDirectory()) {
-
-			FileFilter filtroFicheros = new FileFilter() {
-				@Override
-				public boolean accept(File arch) {
-					return arch.isFile();
+	public static void Elimina(File f) {
+			
+		try {
+	
+			if (f.isDirectory()) {
+	
+				File[] listaFicherosCarpetas = f.listFiles();
+	
+				if (listaFicherosCarpetas == null || listaFicherosCarpetas.length == 0) {
+					System.out.println("El directorio actual no contiene ficheros o carpetas.");
+				} else {
+					System.out.println("\nCarpetas y ficheros existentes: ");
+					for (File elemento: listaFicherosCarpetas) {
+						System.out.println("\t"+ elemento.getName());
+					}
 				}
-			};
-
-			File[] listaFicheros = f.listFiles(filtroFicheros);
-
-			if (listaFicheros == null || listaFicheros.length == 0) {
-				System.out.println("El directorio actual no contiene ficheros.");
-			} else {
-				System.out.println("\nFicheros existentes: ");
-				for (File fichero: listaFicheros) {
-					System.out.println("\t"+ fichero.getName());
-				}
-			}
-
-			Scanner teclado = new Scanner(System.in);
-
-			boolean fallo = false;
-
-			do {
-				System.out.print("\nEscribe el nombre del fichero que deseas eliminar, incluyendo su extensión (por ejemplo, 'fichero.txt'): ");
-
-				String nombreFichero = teclado.next();
-
-				String ruta = f.toString();
-
-				String rutaFichero = ruta + "\\" + nombreFichero;
-
-				File fichero = new File(rutaFichero);
-
-				if (fichero.exists()) {
-
-					if (fichero.delete()) {
-						System.out.println("\nEl fichero se ha eliminado correctamente.");
-						fallo = false;
+	
+				Scanner teclado = new Scanner(System.in);
+	
+				boolean fallo = false;
+	
+				do {
+					System.out.print("\nEscribe el nombre del fichero o la carpeta que deseas eliminar. Si seleccionas un fichero, incluye también su extensión (por ejemplo, 'fichero.txt'): ");
+	
+					String nombreFichero = teclado.next();
+	
+					String ruta = f.toString();
+	
+					String rutaFichero = ruta + "\\" + nombreFichero;
+	
+					File fichero = new File(rutaFichero);
+	
+					if (fichero.exists() && fichero.isFile()) {
+	
+						if (fichero.delete()) {
+							System.out.println("\nEliminado correctamente.");
+							fallo = false;
+						} else {
+							System.out.println("\nNo se ha podido eliminar.");
+							fallo = true;
+						}
+	
+					} else if (fichero.exists() && fichero.isDirectory()) {
+	
+						BorrarDirectorio(fichero);
+						
+						if (fichero.delete()) {
+							System.out.println("\nEliminado correctamente.");
+							fallo = false;
+						} else {
+							System.out.println("\nNo se ha podido eliminar.");
+							fallo = true;
+						}
+	
 					} else {
-						System.out.println("\nNo se ha podido eliminar el fichero.");
+						System.out.println("\nEl fichero o la carpeta introducida no existe.");
 						fallo = true;
 					}
-
+	
+				} while(fallo == true);
+	
+	
+			} else {
+				throw new Exception("El objeto introducido debe ser un directorio.");
+			}
+	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+			
+	}
+	
+	
+	
+	public static void Renombra(File f) {
+		
+		try {
+	
+			if (f.isDirectory()) {
+	
+				File[] listaFicherosCarpetas = f.listFiles();
+	
+				if (listaFicherosCarpetas == null || listaFicherosCarpetas.length == 0) {
+					System.out.println("El directorio actual no contiene ficheros o carpetas.");
 				} else {
-					System.out.println("\nEl fichero introducido no existe.");
-					fallo = true;
+					System.out.println("\nCarpetas y ficheros existentes: ");
+					for (File elemento: listaFicherosCarpetas) {
+						System.out.println("\t"+ elemento.getName());
+					}
 				}
-			} while(fallo == true);
+	
+				Scanner teclado = new Scanner(System.in);
+	
+				boolean fallo = false;
+	
+				do {
+					System.out.print("\nEscribe el nombre del fichero o la carpeta que deseas renombrar. Si seleccionas un fichero, incluye también su extensión (por ejemplo, 'fichero.txt'): ");
+	
+					String nombreFichero = teclado.next();
+	
+					String ruta = f.toString();
+	
+					String rutaFichero = ruta + "\\" + nombreFichero;
+	
+					File fichero1 = new File(rutaFichero);
+	
+					if (fichero1.exists()) {
+						
+						System.out.print("\nIntroduce un nuevo nombre. Si renombras un fichero, incluye también su extensión (por ejemplo, 'fichero.txt'): ");
+						String nombreNuevo = teclado.next();
+						
+						String rutaFicheroNuevo = ruta + "\\" + nombreNuevo;
+						
+						File fichero2 = new File(rutaFicheroNuevo);
+						
+						if (fichero1.renameTo(fichero2)) {
+							System.out.println("\nRenombrado correctamente.");
+							fallo = false;
+						} else {
+							System.out.println("\nNo se ha podido renombrar.");
+							fallo = true;
+						}
+	
+					} else {
+						System.out.println("\nEl fichero o la carpeta introducida no existe.");
+						fallo = true;
+					}
+	
+				} while(fallo == true);
+	
+	
+			} else {
+				throw new Exception("El objeto introducido por parámetro debe ser un directorio.");
+			}
+	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+			
+	}
+	
+	
+	
+	public static void BorrarDirectorio (File directorio) {
+		
+		File[] fichero = directorio.listFiles();
+		
+		for (File elemento: fichero) {
 
-
-		} else if (f.isFile()) {
-			throw new Exception("El objeto pasado por parámetro es un fichero.");
-
-		} else {
-			throw new Exception("El objeto introducido debe ser un directorio o fichero.");
+			if (elemento.isDirectory()) {
+				BorrarDirectorio(elemento);
+			} else {
+				elemento.delete();
+			}
 		}
 		
-	} catch (Exception e) {
-		e.printStackTrace();
 	}
-		
-		
-	}
+	
+	
+	
 	
 
 }
