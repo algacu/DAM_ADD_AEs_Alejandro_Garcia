@@ -17,15 +17,22 @@ public class App {
 	
 	public static void main(String[] args) {
 		
-		File f = new File(args[0]);
+		if (args.length > 0) {
 			
-		if (f.exists() && f.isDirectory() && f.canWrite() && f.canRead()) {
+			File f = new File(args[0]);
 			
-			StartMenu(f);
-			
+			if (f.exists() && f.isDirectory() && f.canWrite() && f.canRead()) {
+				
+				StartMenu(f);
+				
+			} else {
+				System.out.println("El directorio pasado por parámetro no existe, no es un directorio o está protegido.");
+			}
 		} else {
-			System.out.println("El directorio pasado por parámetro no existe, no es un directorio o está protegido.");
+			System.out.println("El parámetro de entrada está vacío. El programa no se puede ejectuar.");
 		}
+		
+		
 	}
 	
 	
