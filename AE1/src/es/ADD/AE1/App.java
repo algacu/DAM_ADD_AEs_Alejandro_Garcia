@@ -183,10 +183,12 @@ public class App {
 
 					int espacioTotal = (int) (elemento.getTotalSpace()/1024/1024/1024);
 					int espacioLibre = (int) (elemento.getFreeSpace()/1024/1024/1024);
-					int espacioOcupado = espacioTotal - espacioLibre;
+					int espacioDisponible = (int) (elemento.getUsableSpace()/1024/1024/1024);
+					System.out.println("Tamaño: " + elemento.length() + " bytes");
 					System.out.println("Espacio total: " + espacioTotal + " GB");
-					System.out.println("Espacio ocupado: " + espacioOcupado + " GB");
 					System.out.println("Espacio libre: " + espacioLibre + " GB");
+					System.out.println("Espacio disponible: " + espacioDisponible + " GB");
+					
 
 			
 					String[] listaArchivos = elemento.list();
