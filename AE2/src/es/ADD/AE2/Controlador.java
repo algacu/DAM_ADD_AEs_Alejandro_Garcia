@@ -1,11 +1,8 @@
 package es.ADD.AE2;
 
 import java.util.ArrayList;
-
 import javax.swing.JOptionPane;
-
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.awt.event.ActionEvent;
 
 public class Controlador {
@@ -15,14 +12,14 @@ public class Controlador {
 	private ActionListener actionListenerBuscar, actionListenerReemplazar;
 	private String ficheroLectura, ficheroEscritura;
 	
-	//Constructor recibe instancia de la vista y del modelo
+	//Constructor recibe instancia de la vista y del modelo.
 	public Controlador(Vista vista, Modelo modelo){
 		this.vista = vista;
 		this.modelo = modelo;
 		control();
 	}
 	
-	//Método para añadir los listeners a los elementos que las generan (botones)
+	//Método para añadir los listeners a los elementos que las generan (botones).
 	public void control(){
 		
 		ficheroLectura = modelo.ficheroLectura();
@@ -44,11 +41,7 @@ public class Controlador {
 				String palabraBuscar = vista.getTextFieldBuscar().getText();
 				String palabraReemplazar = vista.getTextFieldReemplazar().getText();
 				
-				try {
-					modelo.Reemplazar(palabraBuscar, palabraReemplazar);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				modelo.Reemplazar(palabraBuscar, palabraReemplazar);
 				
 				MostrarFichero(ficheroEscritura,2);
 				
@@ -57,11 +50,9 @@ public class Controlador {
 		
 		vista.getBtnBuscar().addActionListener(actionListenerBuscar);
 		vista.getBtnReemplazar().addActionListener(actionListenerReemplazar);
-		
-		//Añadir tantos manejadores de eventos como acciones pueda realizar
-
 	}
 	
+		
 	private void MostrarFichero(String fichero, int numeroTextArea) {
 		ArrayList<String> arrayLineas = modelo.ContenidoFichero(fichero);
 		
@@ -73,6 +64,5 @@ public class Controlador {
 			}
 		}
 	}
-	
-	
+		
 }
