@@ -75,7 +75,7 @@ public class Modelo {
 			
 			for (String palabra : palabras) {
 				
-				if(palabra.equals(palabraBuscar) || palabra.equals(palabraBuscar + "\\p{Punct}")) {
+				if(palabra.equals(palabraBuscar) || palabra.matches(palabraBuscar + "\\p{Punct}")) {
 					palabra = palabraReemplazar;
 				}
 				
