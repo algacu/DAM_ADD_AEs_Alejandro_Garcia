@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<libros>
+    <libro id="1">
+        <titulo>El color que cayó del espacio</titulo>
+        <autor>H.P. Lovecraft</autor>
+        <anyo>2021</anyo>
+        <editorial>Libros del Zorro Rojo</editorial>
+        <pags>66</pags>
+    </libro>
+    <libro id="2">
+        <titulo>Solaris</titulo>
+        <autor>Stanislaw Lem</autor>
+        <anyo>2011</anyo>
+        <editorial>Impedimenta</editorial>
+        <pags>292</pags>
+    </libro>
+    <libro id="3">
+        <titulo>Cosas que los nietos deberían saber</titulo>
+        <autor>Mark Oliver Everett</autor>
+        <anyo>2021</anyo>
+        <editorial>Blackie Books</editorial>
+        <pags>223</pags>
+    </libro>
+    <libro id="4">
+        <titulo>Momentos estelares de la humanidad</titulo>
+        <autor>Stefan Zweig</autor>
+        <anyo>2002</anyo>
+        <editorial>Acantilado</editorial>
+        <pags>305</pags>
+    </libro>
+    <libro id="5">
+        <titulo>Noche cerrada</titulo>
+        <autor>Chris Offutt</autor>
+        <anyo>2020</anyo>
+        <editorial>Sajalín Editores</editorial>
+        <pags>243</pags>
+    </libro>
+    <libro id="6">
+        <titulo>a</titulo>
+        <autor>a</autor>
+        <anyo>a</anyo>
+        <editorial>a</editorial>
+        <pags>a</pags>
+    </libro>
+    <libro id="7">
+        <titulo>b</titulo>
+        <autor>b</autor>
+        <anyo>b</anyo>
+        <editorial>b</editorial>
+        <pags>b</pags>
+    </libro>
+</libros>
