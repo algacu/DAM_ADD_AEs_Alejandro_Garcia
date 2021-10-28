@@ -36,17 +36,17 @@
         <pags>243</pags>
     </libro>
     <libro id="6">
-        <titulo>a</titulo>
-        <autor>a</autor>
-        <anyo>a</anyo>
-        <editorial>a</editorial>
-        <pags>a</pags>
+        <titulo>ju</titulo>
+        <autor>ju</autor>
+        <anyo>ju</anyo>
+        <editorial>ju</editorial>
+        <pags>ju</pags>
     </libro>
     <libro id="7">
-        <titulo>b</titulo>
-        <autor>b</autor>
-        <anyo>b</anyo>
-        <editorial>b</editorial>
-        <pags>b</pags>
+        <titulo>jejeje</titulo>
+        <autor>jejeje</autor>
+        <anyo>jejeje</anyo>
+        <editorial>jejeje</editorial>
+        <pags>jejeje</pags>
     </libro>
 </libros>

@@ -1,25 +1,45 @@
 package es.add.ae3;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
 import org.w3c.dom.*;
 import org.xml.sax.*;
+
 import org.w3c.dom.NodeList;
 
-public class Biblioteca {
+public class Biblioteca2 {
 	
+	
+//	ArrayList<Libro> listaLibros;
+//
+//	Biblioteca (){
+//		try {
+//			listaLibros = recuperarTodos();
+//		} catch (ParserConfigurationException | SAXException | IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
+	
+
 	public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException {
 		
 		System.out.println("AE3 ADD - Alejandro García Cuesta" 
@@ -28,7 +48,6 @@ public class Biblioteca {
 		ArrayList<Libro> listaLibros = recuperarTodos();
 		
 		Scanner teclado = new Scanner(System.in);
-		
 		int numero = 0;
 		boolean continuar = true;
 		int idLibro;
@@ -54,6 +73,7 @@ public class Biblioteca {
 			
 			switch(numero) {
 			case 1:
+//				ArrayList<Libro> lista = recuperarTodos();
 				System.out.println("\n--LISTA DE LIBROS-- ");
 				for (Libro libro : listaLibros) {
 					System.out.println("\nID: " + libro.getId());
@@ -88,6 +108,7 @@ public class Biblioteca {
 			
 			System.out.print("\n¿Deseas realizar otra operación? (si / no): ");
 			String respuesta = teclado.next();
+
 			if (respuesta.equals("Si") || respuesta.equals("si") || respuesta.equals("SI")) {
 				continuar = true;
 			} else if (respuesta.equals("No") || respuesta.equals("no") || respuesta.equals("NO")) {
@@ -97,15 +118,15 @@ public class Biblioteca {
 				continuar = false;
 			}
 			
+			
 		} while (continuar == true);
 		
-		System.out.print("\nBiblioteca cerrada ¡Vuelve pronto!");
+		System.out.print("\nBiblioteca cerrada ¡Vuelve pronto!.");
 		teclado.close();
 	}
 	
 	
 	static int crearLibro(ArrayList<Libro> lista) throws ParserConfigurationException, SAXException, IOException {
-		
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		Document document = dBuilder.parse(new File("libros.xml"));
@@ -118,17 +139,22 @@ public class Biblioteca {
 		System.out.println("\nAñade un nuevo libro completando los siguientes datos:");
 		
 		Scanner teclado = new Scanner(System.in);
+		
 		System.out.print("Título: "); 
 		String titulo = teclado.nextLine();
+		
 		System.out.print("Autor: ");
 		String autor = teclado.nextLine();
+		
 		System.out.print("Año de publicación: ");
 		String anyo = teclado.nextLine();
+		
 		System.out.print("Editorial: ");
 		String editorial = teclado.nextLine();
+		
 		System.out.print("Nº de páginas: ");
 		String pags = teclado.nextLine();
-		
+			
 		Libro nuevoLibro = new Libro(idString, titulo, autor, anyo, editorial, pags);
 			
 		lista.add(nuevoLibro);
@@ -150,7 +176,10 @@ public class Biblioteca {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		Document document = dBuilder.parse(new File("libros.xml"));
+		//Element raiz = document.getDocumentElement();
+		//System.out.println("Contenido XML " + raiz.getNodeName()+": ");
 		NodeList nodeList = document.getElementsByTagName("libro");
+		//System.out.println("Número total de nodos (películas): " + nodeList.getLength());
 		Node nodo = nodeList.item(identificador-1);
 		Element elemento = (Element) nodo;
 		String id = elemento.getAttribute("id");
@@ -159,7 +188,6 @@ public class Biblioteca {
 		String anyo = elemento.getElementsByTagName("anyo").item(0).getTextContent();
 		String editorial = elemento.getElementsByTagName("editorial").item(0).getTextContent();
 		String pags = elemento.getElementsByTagName("pags").item(0).getTextContent();
-		
 		Libro libro = new Libro(id, titulo, autor, anyo, editorial, pags);
 		return libro;
 	}
@@ -179,58 +207,18 @@ public class Biblioteca {
 				
 		for (Libro libro : lista) {
 			if (libro.getId().equals(String.valueOf(identificador))) {
-				System.out.println("\nLibro seleccionado para borrar: " + libro.toString());
 				lista.remove(libro);
-				System.out.println("Libro borrado correctamente.");
+				System.out.println("borrado");
 				break;
 			}
 		}
 		
-		for (int i = 0; i < lista.size(); i++) {
-			lista.get(i).setId(String.valueOf(i+1));
-		}
-		
-		try {
-			guardarXML(lista);
-		} catch (IOException | TransformerException | ParserConfigurationException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	
-	static void actualizarLibro(int identificador, ArrayList<Libro> lista) throws ParserConfigurationException, SAXException, IOException {
-
-		Scanner teclado = new Scanner(System.in);
+		int numero = 1;
 		
 		for (Libro libro : lista) {
-			
-			if (libro.getId().equals(String.valueOf(identificador))) {
-				
-				System.out.print("\nLibro seleccionado para modificar: " + libro.toString());
-	
-				System.out.print("\nNuevo título: "); 
-				String titulo = teclado.nextLine();
-				libro.setTitulo(titulo);
-				
-				System.out.print("Nuevo autor: ");
-				String autor = teclado.nextLine();
-				libro.setAutor(autor);
-				
-				System.out.print("Neuvo año de publicación: ");
-				String anyo = teclado.nextLine();
-				libro.setAnyo(anyo);
-				
-				System.out.print("Nueva editorial: ");
-				String editorial = teclado.nextLine();
-				libro.setEditorial(editorial);
-				
-				System.out.print("Nuevo nº de páginas: ");
-				String pags = teclado.nextLine();
-				libro.setPags(pags);
-			}
+			libro.setId(String.valueOf(numero));
+			numero++;
 		}
-		
-		System.out.println("\nLibro modificado correctamente.");
 		
 		try {
 			guardarXML(lista);
@@ -238,7 +226,51 @@ public class Biblioteca {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+	}
+	
+	
+	static void actualizarLibro(int identificador, ArrayList<Libro> lista) throws ParserConfigurationException, SAXException, IOException {
+//		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+//		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+//		Document document = dBuilder.parse(new File("libros.xml"));
+//		NodeList nodeList = document.getElementsByTagName("libro");
+//		Node nodo = nodeList.item(identificador);
 		
+		Scanner teclado = new Scanner(System.in);
+		
+		for (Libro libro : lista) {
+			
+			if (libro.getId().equals(String.valueOf(identificador))) {
+				
+				System.out.print("\nTítulo: "); 
+				String titulo = teclado.nextLine();
+				libro.setTitulo(titulo);
+				
+				System.out.print("Autor: ");
+				String autor = teclado.nextLine();
+				libro.setAutor(autor);
+				
+				System.out.print("Año de publicación: ");
+				String anyo = teclado.nextLine();
+				libro.setAnyo(anyo);
+				
+				System.out.print("Editorial: ");
+				String editorial = teclado.nextLine();
+				libro.setEditorial(editorial);
+				
+				System.out.print("Nº de páginas: ");
+				String pags = teclado.nextLine();
+				libro.setPags(pags);
+			}
+		}
+		
+		try {
+			guardarXML(lista);
+		} catch (IOException | TransformerException | ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -246,7 +278,10 @@ public class Biblioteca {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		Document document = dBuilder.parse(new File("libros.xml"));
+		//Element raiz = document.getDocumentElement();
+		//System.out.println("Contenido XML " + raiz.getNodeName()+": ");
 		NodeList nodeList = document.getElementsByTagName("libro");
+		//System.out.println("Número total de nodos (películas): " + nodeList.getLength());
 		
 		ArrayList<Libro> lista = new ArrayList<Libro>();
 		
@@ -309,11 +344,19 @@ public class Biblioteca {
 		aTransformer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
 		aTransformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount","4");
 		aTransformer.setOutputProperty(OutputKeys.INDENT,"yes");
+		
 		DOMSource source = new DOMSource(doc);
+		
 		FileWriter fw = new FileWriter("libros.xml");
 		StreamResult result = new StreamResult(fw);
 		aTransformer.transform(source, result);
 		fw.close();
 	}
+	
+	
+	
+	
+	
+	
 
 }
