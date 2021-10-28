@@ -62,7 +62,7 @@ public class Libro {
 	}
 	
 	public String toString() {
-		String info = "Id: " + this.id + "- Título: " + this.titulo + " - Autor: " + this.autor + " - Año publicación: " + this.anyo 
+		String info = "Id: " + this.id + " - Título: " + this.titulo + " - Autor: " + this.autor + " - Año publicación: " + this.anyo 
 				+ " - Editorial: " + this.editorial + " - Páginas: " + this.pags;
 		return info;
 	}

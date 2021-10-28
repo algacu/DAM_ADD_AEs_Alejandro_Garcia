@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,10 +26,10 @@ public class Biblioteca {
 		System.out.println("AE3 ADD - Alejandro García Cuesta" 
 				+ "\nBienvenido a la BIBLIOTECA VIRTUAL");
 		
+		//Al arrancar el programa, la función recuperarTodos() lee el archivo XML y carga los libros en ArrayList de objetos de tipo Libro.
 		ArrayList<Libro> listaLibros = recuperarTodos();
 		
 		Scanner teclado = new Scanner(System.in);
-		
 		int numero = 0;
 		boolean continuar = true;
 		int idLibro;
@@ -47,40 +48,44 @@ public class Biblioteca {
 				System.out.print("Elige una opción: ");
 				numero = teclado.nextInt();
 				}
-			} catch (Exception e) {
+			} catch (InputMismatchException ime) {
 				System.out.println("\nError: el dato introducido no es un número.");
 				System.exit(0);	
 			}
 			
-			switch(numero) {
-			case 1:
-				System.out.println("\n--LISTA DE LIBROS-- ");
-				for (Libro libro : listaLibros) {
-					System.out.println("\nID: " + libro.getId());
-					System.out.println("Título: " + libro.getTitulo());
+			try {
+				switch(numero) {
+					case 1:
+						System.out.println("\n--LISTA DE LIBROS-- ");
+						for (Libro libro : listaLibros) {
+							System.out.println("\nID: " + libro.getId());
+							System.out.println("Título: " + libro.getTitulo());
+						}
+						break;
+					case 2:
+						System.out.print("Introduce la ID del libro: ");
+						idLibro = teclado.nextInt();
+						mostrarLibro(recuperarLibro(idLibro));
+						break;
+					case 3:
+						mostrarLibro(recuperarLibro(crearLibro(listaLibros)));
+						break;
+					case 4:
+						System.out.print("Introduce la ID del libro: ");
+						idLibro = teclado.nextInt();
+						actualizarLibro(idLibro, listaLibros);
+						break;
+					case 5:
+						System.out.print("Introduce la ID del libro: ");
+						idLibro = teclado.nextInt();
+						borrarLibro(idLibro, listaLibros);
+						break;
+					case 6:
+						System.out.print("\nBiblioteca cerrada ¡Vuelve pronto!");
+						System.exit(0);	
 				}
-				break;
-			case 2:
-				System.out.print("Introduce la ID del libro: ");
-				idLibro = teclado.nextInt();
-				mostrarLibro(recuperarLibro(idLibro));
-				break;
-			case 3:
-				mostrarLibro(recuperarLibro(crearLibro(listaLibros)));
-				break;
-			case 4:
-				System.out.print("Introduce la ID del libro: ");
-				idLibro = teclado.nextInt();
-				actualizarLibro(idLibro, listaLibros);
-				break;
-			case 5:
-				System.out.print("Introduce la ID del libro: ");
-				idLibro = teclado.nextInt();
-				borrarLibro(idLibro, listaLibros);
-				break;
-			case 6:
-				System.out.print("\nBiblioteca cerrada ¡Vuelve pronto!");
-				System.exit(0);	
+			} catch (InputMismatchException ime) {
+				System.out.println("\nError: el dato introducido no es un número.");
 				break;
 			}
 			
@@ -104,6 +109,12 @@ public class Biblioteca {
 	}
 	
 	
+	//Método: crearLibro
+		//MODIFICADO CON RESPECTO AL ENUNCIADO (recibe lista de objetos Libro por parámetro).
+		// Descripción: método que lee el fichero XML para obtener el número (id) de nodos (libros) y crear un objeto de tipo libro con la siguiente id (número de nodo) disponble.
+		//	+Después de crear el objeto de tipo Libro, instancia el método auxiliar 'guardarXML' para registrar los cambios en el fichero XML.
+		// Parámetros de entrada: ArrayList de objetos tipo Libro.
+		// Parámetros de salida: id (número de nodo en el fichero XML) del objeto de tipo Libro creado.
 	static int crearLibro(ArrayList<Libro> lista) throws ParserConfigurationException, SAXException, IOException {
 		
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -145,7 +156,10 @@ public class Biblioteca {
 		return id;
 	}
 	
-	
+	//Método: recuperarLibro
+			// Descripción: método que recibe un valor y busca en el fichero XML el nodo/elemento con el valor seleccionado (el identificador es el atributo id del elemento)
+			// Parámetros de entrada: entero.
+			// Parámetros de salida: objeto de tipo libro, cuya información se extrae del fichero XML tras seleccionar el elemento correcto según el identificador.
 	static Libro recuperarLibro(int identificador) throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -165,6 +179,10 @@ public class Biblioteca {
 	}
 	
 	
+	//Método: mostrarLibro
+	// Descripción: método que recibe objeto de tipo Libro e imprime por pantalla sus atributos.
+	// Parámetros de entrada: objeto de tipo Libro.
+	// Parámetros de salida: void (imprime por pantalla).
 	static void mostrarLibro(Libro libro) {
 		System.out.println("\nID: " + libro.getId()
 				+ "\nTítulo: " + libro.getTitulo()
@@ -175,6 +193,15 @@ public class Biblioteca {
 	}
 	
 	
+	//Método: borrarLibro
+		//MODIFICADO CON RESPECTO AL ENUNCIADO (recibe lista de objetos Libro por parámetro, además del identificador).
+		// Descripción: método que recibe un valor y una lista de objetos tipo Libro por parámetro.
+		//	+busca en la lista de libros el libro con el valor (identificador) seleccionado y lo borra.
+		//  +Después de borar el libro seleccionado, recorre de nuevo la lista de libros reasignado valores del atributo ID de
+		//	+cada objeto tipo libro, para evitar incoherencias en la correlación de IDs (número de nodos en el fichero XML).
+		//	+Finalmente, los cambios se registran en el fichero XML instanciando el método auxiliar 'guardarXML', pasando por parámetro la lista de libros actualizada.
+		// Parámetros de entrada: entero, ArrayList de objetos tipo Libro.
+		// Parámetros de salida: void.
 	static void borrarLibro(int identificador, ArrayList<Libro> lista) throws ParserConfigurationException, SAXException, IOException {
 				
 		for (Libro libro : lista) {
@@ -198,6 +225,15 @@ public class Biblioteca {
 	}
 	
 	
+	//Método: borrarLibro
+			//MODIFICADO CON RESPECTO AL ENUNCIADO (recibe lista de objetos Libro por parámetro, además del identificador).
+			// Descripción: método que recibe un valor y una lista de objetos tipo Libro por parámetro.
+			//	+busca en la lista de libros el libro con el valor (identificador) seleccionado y lo borra.
+			//  +Después de borar el libro seleccionado, recorre de nuevo la lista de libros reasignado valores del atributo ID de
+			//	+cada objeto tipo libro, para evitar incoherencias en la correlación de IDs (número de nodos en el fichero XML).
+			//	+Finalmente, los cambios se registran en el fichero XML instanciando el método auxiliar 'guardarXML', pasando por parámetro la lista de libros actualizada.
+			// Parámetros de entrada: entero, ArrayList de objetos tipo Libro.
+			// Parámetros de salida: void.
 	static void actualizarLibro(int identificador, ArrayList<Libro> lista) throws ParserConfigurationException, SAXException, IOException {
 
 		Scanner teclado = new Scanner(System.in);
