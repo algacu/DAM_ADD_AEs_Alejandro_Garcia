@@ -36,17 +36,10 @@
         <pags>243</pags>
     </libro>
     <libro id="6">
-        <titulo>ju</titulo>
-        <autor>ju</autor>
-        <anyo>ju</anyo>
-        <editorial>ju</editorial>
-        <pags>ju</pags>
-    </libro>
-    <libro id="7">
-        <titulo>jejeje</titulo>
-        <autor>jejeje</autor>
-        <anyo>jejeje</anyo>
-        <editorial>jejeje</editorial>
-        <pags>jejeje</pags>
+        <titulo>Marcelín</titulo>
+        <autor>Sempé</autor>
+        <anyo>2016</anyo>
+        <editorial>Blackie Books</editorial>
+        <pags>126</pags>
     </libro>
 </libros>

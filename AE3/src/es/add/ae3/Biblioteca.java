@@ -117,17 +117,17 @@ public class Biblioteca {
 		// Parámetros de salida: id (número de nodo en el fichero XML) del objeto de tipo Libro creado.
 	static int crearLibro(ArrayList<Libro> lista) throws ParserConfigurationException, SAXException, IOException {
 		
+		//Primero averiguamos la primera ID disponible en el XML
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		Document document = dBuilder.parse(new File("libros.xml"));
 		NodeList nodeList = document.getElementsByTagName("libro");
-		
 		int numNodos = nodeList.getLength();
 		int id = numNodos + 1;
 		String idString = String.valueOf(id);
 	
+		//Pedimos datos al usuario
 		System.out.println("\nAñade un nuevo libro completando los siguientes datos:");
-		
 		Scanner teclado = new Scanner(System.in);
 		System.out.print("Título: "); 
 		String titulo = teclado.nextLine();
@@ -141,7 +141,7 @@ public class Biblioteca {
 		String pags = teclado.nextLine();
 		
 		Libro nuevoLibro = new Libro(idString, titulo, autor, anyo, editorial, pags);
-			
+		
 		lista.add(nuevoLibro);
 		
 		try {
@@ -155,6 +155,7 @@ public class Biblioteca {
 		
 		return id;
 	}
+	
 	
 	//Método: recuperarLibro
 			// Descripción: método que recibe un valor y busca en el fichero XML el nodo/elemento con el valor seleccionado (el identificador es el atributo id del elemento)
@@ -225,13 +226,11 @@ public class Biblioteca {
 	}
 	
 	
-	//Método: borrarLibro
+	//Método: actualizarLibro
 			//MODIFICADO CON RESPECTO AL ENUNCIADO (recibe lista de objetos Libro por parámetro, además del identificador).
 			// Descripción: método que recibe un valor y una lista de objetos tipo Libro por parámetro.
-			//	+busca en la lista de libros el libro con el valor (identificador) seleccionado y lo borra.
-			//  +Después de borar el libro seleccionado, recorre de nuevo la lista de libros reasignado valores del atributo ID de
-			//	+cada objeto tipo libro, para evitar incoherencias en la correlación de IDs (número de nodos en el fichero XML).
-			//	+Finalmente, los cambios se registran en el fichero XML instanciando el método auxiliar 'guardarXML', pasando por parámetro la lista de libros actualizada.
+			//	+busca en la lista de libros el libro con el valor (identificador) seleccionado y cambia sus atributos al recibir nuevos datos por teclado.
+			//	+A continuación, los cambios se registran en el fichero XML instanciando el método auxiliar 'guardarXML', pasando por parámetro la lista de libros actualizada.
 			// Parámetros de entrada: entero, ArrayList de objetos tipo Libro.
 			// Parámetros de salida: void.
 	static void actualizarLibro(int identificador, ArrayList<Libro> lista) throws ParserConfigurationException, SAXException, IOException {
@@ -252,7 +251,7 @@ public class Biblioteca {
 				String autor = teclado.nextLine();
 				libro.setAutor(autor);
 				
-				System.out.print("Neuvo año de publicación: ");
+				System.out.print("Nuevo año de publicación: ");
 				String anyo = teclado.nextLine();
 				libro.setAnyo(anyo);
 				
@@ -278,6 +277,10 @@ public class Biblioteca {
 	}
 	
 	
+	//Método: recuperarTodos
+	// Descripción: método que lee el contenido de un fichero XML y crea una lista de objetos de tipo Libro a partir de los datos del fichero.
+	// Parámetros de entrada: -
+	// Parámetros de salida: ArrayList de objetos tipo Libro.
 	static ArrayList<Libro> recuperarTodos() throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -302,6 +305,10 @@ public class Biblioteca {
 	}
 	
 	
+	//Método: guardarXML
+		// Descripción: método que recibe una lista de objetos tipo Libro y los convierte en elementos de un fichero XML, escribiéndolo.
+		// Parámetros de entrada: ArrayList de objetos tipo Libro.
+		// Parámetros de salida: void.
 	static void guardarXML(ArrayList<Libro> lista) throws IOException, TransformerException, ParserConfigurationException {
 		
 		//PREPARAMOS EL DOM
