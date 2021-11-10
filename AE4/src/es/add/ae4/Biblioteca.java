@@ -14,87 +14,20 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Biblioteca {
-
-//	public static void main(String[] args) {
-//		
-//		String seguir = "si";
-//		Scanner teclado1 = new Scanner(System.in);
-//		Scanner teclado2 = new Scanner(System.in);
-//		
-//		System.out.println("Bienvenido a la biblioteca de Arrakeen");
-//
-//		while (seguir.equals("s") || seguir.equals("si")) {
-//			System.out.println("\n¿Qué deseas hacer?");
-//			System.out.println("\t1 - Cargar una nueva base de datos (.CSV)");
-//			System.out.println("\t2 - Ver la base de datos entera");
-//			System.out.println("\t3 - Consultar un libro de la base de datos");
-//			System.out.println("\t4 - Añadir un libro a la base de datos");
-//			System.out.println("\t5 - Modificar un libro de la base de datos");
-//			System.out.println("\t6 - Borrar un libro de la base de datos");
-//			System.out.println("\t7 - Consulta SQL personalizada");
-//			System.out.println("\t8 - Salir");
-//			System.out.print("\nIntroduce una opción (número): ");
-//			int numero = teclado1.nextInt();
-//			String id = "hola";
-//			
-//			try {
-//				Connection conexion = conectar();
-//				System.out.println("\nConexión realizada con la base de datos.\n");
-//				ejecutar(numero, conexion, id);
-//			} catch (ClassNotFoundException | SQLException e) {
-//				System.err.println("ERROR al conectar con la base de datos.");
-//			}
-//			
-//			System.out.print("\n¿Deseas realizar otra operación (s/n)? ");
-//			seguir = teclado2.nextLine();
-//		}
-//		
-//		System.out.println("Gracias por consultar la biblioteca de Arrakeen. Leer es bueno. ¡Larga vida a Arrakis!");
-//	}
 	
+	//Método: cargarBD
+	//Descripción: establece conexión BD remota, lee un fichero .CSV local y lo carga a remoto.
+		//Primero borra la base de datos en remoto (para hacer una carga limpia) y reseta el auto-increment de la primary-key (id) a 1.
+	//Parámetros de entrada: conexión con la BD.
+	//Parámetros de salida: String con los datos (libros) cargados en la BD.
+	public static String cargarBD(Connection con) {
 		
-//	public static void ejecutar(int numero, Connection conexion, String id) {
-//		try {
-//			switch (numero) {
-//				case 1: 
-//					cargarBD(conexion);
-//					break;
-//				case 2:
-//					mostrarBD(conexion);
-//					break;
-//				case 3:
-//					consultarLibro(conexion, id);
-//					break;
-//				case 4:
-//					anyadirLibro(conexion);
-//					break;
-//				case 5:
-//					modificarLibro(conexion);
-//					break;
-//				case 6:
-//					borrarLibro(conexion);
-//					break;
-//				case 7:
-//					consultaSQL(conexion);
-//					break;
-//				case 8:
-//					System.out.println("Gracias por consultar la biblioteca de Arrakeen. Leer es bueno. ¡Larga vida a Arrakis!");
-//					System.exit(0);
-//			}
-//		} catch (Exception e) {
-//			System.err.print("ERROR al ejectuar la orden introducida.");
-//		}
-//	}
-	
-	
-	public static void cargarBD(Connection con) {
-		 try {
-			 
+		String linea = "";
+		
+		try {
 			 PreparedStatement psInsertar = con.prepareStatement("INSERT INTO libros (titulo, autor, anyo_nac, anyo_pub, editorial, pags) VALUES (?,?,?,?,?,?)");
 			 PreparedStatement psBorrarTodo = con.prepareStatement("DELETE FROM libros");
 			 PreparedStatement psResetId = con.prepareStatement("alter table libros AUTO_INCREMENT=1;");
-			    
-		     ArrayList<Libro> libros = new ArrayList<Libro>();
 		     BufferedReader br = null;
 				
 		     psBorrarTodo.executeUpdate();
@@ -106,7 +39,7 @@ public class Biblioteca {
 
 	         while (line != null) {
 	            String [] datosLibro = line.split(";");
-	            
+	       
 	            if (contador > 0) {
 	            	
 	            	for (int i = 0; i < datosLibro.length; i++ ) {
@@ -125,26 +58,28 @@ public class Biblioteca {
 	    			int resultadoInsertar = psInsertar.executeUpdate();
 	    			
 	    			Libro nuevoLibro = new Libro(datosLibro[0], datosLibro[1], datosLibro[2], datosLibro[3], datosLibro[4], datosLibro[5]);
-	    			libros.add(nuevoLibro);
 	    			
 	    			if (resultadoInsertar > 0) {
-	    				System.out.println("Libro guardado en la base de datos (fila "+ contador +"): " + nuevoLibro.toString());
+	    				linea += "\nLibro guardado en la base de datos (fila "+ contador +"): " + "\n" + nuevoLibro.toString() + "\n";
 	    			} else {
-	    				System.err.println("ERROR en la inserción.");
+	    				linea = "ERROR en la inserción.";
 	    			}
 	            }
 	            contador++;
 	            line = br.readLine();
 	         }
 	         br.close();
-	         nacidosAntes1950(libros);
-		     editorialesSXXI(libros);
 	      } catch (SQLException | IOException e) {
-	    	  System.err.print("ERROR al cargar la base de datos.");
-	      } 
+	    	  linea = "ERROR al cargar la base de datos.";
+	      }
+		return linea;
 	}
 	
 	
+	//Método: mostrarBD
+		//Descripción: establece conexión BD remota y la muestra por pantalla.
+		//Parámetros de entrada: conexión con la BD.
+		//Parámetros de salida: String con los datos (libros) de la BD.
 	public static String mostrarBD(Connection con) {
 		
 		String linea = "";
@@ -168,6 +103,10 @@ public class Biblioteca {
 	}
 	
 	
+	//Método: mostrarBD
+		//Descripción: establece conexión BD remota y obtiene información a partir de una query con un parámetro (id) concreto.
+		//Parámetros de entrada: conexión con la BD.
+		//Parámetros de salida: String con los datos del dato (libro) consultado.
 	public static String consultarLibro(Connection con, String id) {
 		
 		String linea = "";
@@ -191,10 +130,13 @@ public class Biblioteca {
 	}
 	
 	
+	//Método: mostrarBD
+		//Descripción: establece conexión BD remota y borra el dato (libro) seleccionado por parámetro (id).
+		//Parámetros de entrada: conexión con la BD.
+		//Parámetros de salida: String que confirma el borrado.
 	public static String borrarLibro(Connection con, String id){
 		String linea = "";
 		try {
-			System.out.print("Introducir ID para borrar entrada: ");
 
 			PreparedStatement psBorrar = con.prepareStatement("DELETE FROM libros WHERE id = " + id);
 
@@ -214,6 +156,10 @@ public class Biblioteca {
 	}
 	
 	
+	//Método: anyadirLibro
+		//Descripción: establece conexión BD remota y añade datos (libro) pasados por parámetro.
+		//Parámetros de entrada: conexión con la BD y Strings.
+		//Parámetros de salida: String que confirma el añadido, mostrando los datos (libro) introducidos.
 	public static String anyadirLibro(Connection con, String titulo, String autor, String anyoNac, String anyoPub, String editorial, String pags) {
 		
 		String linea = "";
@@ -246,6 +192,10 @@ public class Biblioteca {
 	}
 	
 	
+	//Método: modificarLibro
+			//Descripción: establece conexión BD remota y modifica datos (libro) pasados por parámetro.
+			//Parámetros de entrada: conexión con la BD y Strings.
+			//Parámetros de salida: String que confirma el añadido, mostrando los datos (libro) modificados.
 	public static String modificarLibro(Connection con, String id, String titulo, String autor, String anyoNac, String anyoPub, String editorial, String pags){
 		String linea;	
 		try {
@@ -271,6 +221,10 @@ public class Biblioteca {
 	}
 	
 	
+	//Método: modificarLibro
+		//Descripción: establece conexión BD remota y ejectua una consulta SQL (AÑADIDO: también puede ejecutar comandos SQL como DELETE, ALTER, etc...)
+		//Parámetros de entrada: conexión con la BD y String.
+		//Parámetros de salida: String con el resultado de la consulta o confirmación del comando ejecutado.
 	public static String consultaSQL(Connection con, String consulta){
 	
 		String sql = consulta.toUpperCase();
@@ -314,43 +268,71 @@ public class Biblioteca {
 	}
 	
 	
-	public static void nacidosAntes1950(ArrayList<Libro> libros) {
-		System.out.println("\nLibros de autores nacidos antes de 1950:");
-		for (Libro libro : libros) {
-			if (!libro.getAnyoNac().equals("N.C.")){
-				int anyo = Integer.parseInt(libro.getAnyoNac());
-				if (anyo < 1950) {
-					System.out.println("Título: " + libro.getTitulo() + " - Autor: " + libro.getAutor() + " - Año publicación: " + libro.getAnyoPub());
-				}
-			}
-		}
-	}
-	
-	
-	public static void editorialesSXXI(ArrayList<Libro> libros) {
-		ArrayList<String> editoriales = new ArrayList<String>();
-		System.out.println("\nEditoriales que hayan publicado al menos 1 libro en el Siglo XXI:");
-		for (Libro libro : libros) {
-			int anyoPub = Integer.parseInt(libro.getAnyoPub());
+	//Método: nacidosAntes1950
+		//Descripción: establece conexión BD remota y obtiene datos seleccionados por consulta query.
+		//Parámetros de entrada: conexión con la BD.
+		//Parámetros de salida: String con el resultado de la consulta.
+	public static String nacidosAntes1950(Connection con) {
+		
+		String linea = "\nLibros de autores nacidos antes de 1950:";		
+		
+		try {
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT titulo, autor, anyo_pub FROM libros WHERE anyo_nac < 1950");
 			
-			if (anyoPub > 2000) {
-				if (!editoriales.contains(libro.getEditorial())) {
-					editoriales.add(libro.getEditorial());
-				}
+			while (rs.next()) {
+				linea += "\nTítulo: " + rs.getString(1) + " - Autor: " + rs.getString(2) + " - Año publicación: " + rs.getString(3);
 			}
+			
+			rs.close();
+		} catch (SQLException e){
+			linea = "ERROR en la conexión con la BD.";
 		}
-		for (String editorial : editoriales) {
-			System.out.println(editorial);
+		
+		return linea;
+	}
+	
+	
+	//Método: editorialesSXXI
+		//Descripción: establece conexión BD remota y obtiene datos seleccionados por consulta query.
+		//Parámetros de entrada: conexión con la BD.
+		//Parámetros de salida: String con el resultado de la consulta.
+	public static String editorialesSXXI(Connection con) {
+				
+		String linea = "\nEditoriales que hayan publicado al menos 1 libro en el Siglo XXI:";
+		ArrayList<String> editoriales = new ArrayList<String>();
+		
+		try {
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT editorial FROM libros WHERE anyo_pub > 2000");
+			
+			while (rs.next()) {
+				editoriales.add(rs.getString(1));
+			}
+			
+			for (String editorial : editoriales) {
+				linea += "\n" + editorial;
+			}
+			
+			rs.close();
+			
+		} catch (SQLException e){
+			linea = "ERROR en la conexión con la BD.";
 		}
+		
+		return linea;
 	}
 
-
+	
+	//Método: conectar()
+			//Descripción: conecta con BD remota.
+			//Parámetros de entrada: no.
+			//Parámetros de salida: conexión.
 	public static Connection conectar() throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/biblioteca","root","");
 		return con;
 	}
-	
 	
 }
 
