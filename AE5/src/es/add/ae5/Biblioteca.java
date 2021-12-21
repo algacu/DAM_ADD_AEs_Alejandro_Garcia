@@ -9,9 +9,11 @@ import org.hibernate.Session;
 public class Biblioteca {
 
 	// Método: mostrarBD
-	// Descripción: establece conexión BD remota y la muestra por pantalla.
-	// Parámetros de entrada: conexión con la BD.
-	// Parámetros de salida: String con los datos (libros) de la BD.
+	// Descripción: recibe las session, instancia un objeto modelo de tipo libro y va recuper objetos 
+	//	del mismo tipo de la BD. Los guarda en una lista y, a continuación, los encadena en un string 
+	//	para mostrarlos posteriormente por pantalla.
+	// Parámetros de entrada: session (creada a través de session factory en principal).
+	// Parámetros de salida: string con los datos (libros) de la BD.
 	public static String mostrarBD(Session session) {
 
 		String linea = "";
@@ -26,17 +28,6 @@ public class Biblioteca {
 				linea += elemento.getId() + " - " + elemento.getTitulo() + "\n";
 			}
 
-			/*
-			 * ArrayList<Libro> listaLibros = new ArrayList<Libro>(); listaLibros =
-			 * session.createQuery(“FROM Libro”).list();
-			 * 
-			 * for (Libro libro:listaLibros) { linea += "\nID: " + libro.getId() +
-			 * " - Título: " + libro.titulo + " - Autor: " + libro.autor +
-			 * " - Año de nacimiento: " + libro.anyo_nac + " - Año de publicación: " +
-			 * libro.anyo_pub + " - Editorial: " + libro.editorial + " - Nº de páginas: " +
-			 * libro.pags + "\n"; }
-			 */
-
 		} catch (Exception e) {
 			linea = "ERROR en la conexión con la BD.";
 		}
@@ -45,10 +36,9 @@ public class Biblioteca {
 	}
 
 	// Método: consultarLibro
-	// Descripción: establece conexión BD remota y obtiene información a partir de
-	// una query con un parámetro (id) concreto.
-	// Parámetros de entrada: conexión con la BD.
-	// Parámetros de salida: String con los datos del dato (libro) consultado.
+	// Descripción: recupera un objeto de tipo Libro de la BD a partir de una id.
+	// Parámetros de entrada: session (creada a través de session factory en principal) e id de tipo int.
+	// Parámetros de salida: string con los datos del dato (libro) consultado.
 	public static String consultarLibro(Session session, int id) {
 
 		String linea = "";
@@ -68,10 +58,9 @@ public class Biblioteca {
 	}
 
 	// Método: borrarLibro
-	// Descripción: establece conexión BD remota y borra el dato (libro)
-	// seleccionado por parámetro (id).
-	// Parámetros de entrada: conexión con la BD.
-	// Parámetros de salida: String que confirma el borrado.
+	// Descripción: recupera un objeto de tipo Libro de la BD a partir de una id y lo borra.
+	// Parámetros de entrada: session (creada a través de session factory en principal) e id de tipo int.
+	// Parámetros de salida: string que confirma el borrado.
 	public static String borrarLibro(Session session, int id) {
 		String linea = "";
 
@@ -95,11 +84,9 @@ public class Biblioteca {
 	}
 
 	// Método: anyadirLibro
-	// Descripción: establece conexión BD remota y añade datos (libro) pasados por
-	// parámetro.
-	// Parámetros de entrada: conexión con la BD y Strings.
-	// Parámetros de salida: String que confirma el añadido, mostrando los datos
-	// (libro) introducidos.
+	// Descripción: crea un objeto de tipo libro y lo guarda en la BD con una nueva id.
+	// Parámetros de entrada: session (creada a través de session factory en principal) y strings.
+	// Parámetros de salida: string que confirma el añadido, mostrando los datos (libro) introducidos.
 	public static String anyadirLibro(Session session, String titulo, String autor, String anyoNac, String anyoPub,
 			String editorial, String pags) {
 
@@ -124,11 +111,9 @@ public class Biblioteca {
 	}
 
 	// Método: modificarLibro
-	// Descripción: establece conexión BD remota y modifica datos (libro) pasados
-	// por parámetro.
-	// Parámetros de entrada: conexión con la BD y Strings.
-	// Parámetros de salida: String que confirma el añadido, mostrando los datos
-	// (libro) modificados.
+	// Descripción: recupera un objeto de tipo Libro de la BD a partir de una id y modifica sus parámetros.
+	// Parámetros de entrada: session (creada a través de session factory en principal) y strings.
+	// Parámetros de salida: String que confirma la modificación, mostrando los datos (libro) modificados.
 	public static String modificarLibro(Session session, int id, String titulo, String autor, String anyoNac,
 			String anyoPub, String editorial, String pags) {
 
@@ -158,12 +143,10 @@ public class Biblioteca {
 		return linea;
 	}
 
-	// Método: modificarLibro
-	// Descripción: establece conexión BD remota y modifica datos (libro) pasados
-	// por parámetro.
-	// Parámetros de entrada: conexión con la BD y Strings.
-	// Parámetros de salida: String que confirma el añadido, mostrando los datos
-	// (libro) modificados.
+	// Método: guardarBD
+	// Descripción: hace commit de la sesión actual con la BD remota y cierra la sesión.
+	// Parámetros de entrada: session (creada a través de session factory en principal).
+	// Parámetros de salida: string.
 	public static String guardarBD(Session session) {
 
 		String linea = "";

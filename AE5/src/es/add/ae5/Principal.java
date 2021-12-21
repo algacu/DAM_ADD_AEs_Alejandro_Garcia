@@ -23,6 +23,7 @@ public class Principal {
 				Session session = sessionFactory.openSession();
 				session.beginTransaction();			
 				
+				// Ejecución del modelo vista controlador (el controlador recibe la "session" por parámetro)
 				Vista vista = new Vista();
 				Biblioteca biblioteca = new Biblioteca();
 				Controlador controlador = new Controlador(vista, biblioteca, session);
