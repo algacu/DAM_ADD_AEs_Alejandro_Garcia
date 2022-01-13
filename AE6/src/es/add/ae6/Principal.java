@@ -14,12 +14,12 @@ public class Principal {
 		
 		try {
 			
-			//Realizamos conexión
+			//Realizamos conexión con MongoDB y obtemos la colección de documentos de la BD.
 			MongoClient mongoClient = new MongoClient("localhost", 27017);
 			MongoDatabase database = mongoClient.getDatabase("Biblioteca");
 			MongoCollection<Document> coleccion = database.getCollection("Libros");
 
-			// Ejecución del modelo vista controlador (el controlador recibe la coleccion por parámetro)
+			//Ejecución del modelo vista controlador (el controlador recibe la coleccion por parámetro).
 			Vista vista = new Vista();
 			Biblioteca biblioteca = new Biblioteca();
 			Controlador controlador = new Controlador(vista, biblioteca, coleccion);

@@ -17,7 +17,6 @@ public class Vista {
 	private JButton btnAnyadir;
 	private JButton btnModificar;
 	private JButton btnBorrar;
-	private JButton btnGuardar;
 	private JTextField textField_Mostrar;
 	private JTextArea textArea_Texto;
 
@@ -71,11 +70,6 @@ public class Vista {
 		btnBorrar.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		btnBorrar.setBounds(300, 262, 120, 27);
 		frame.getContentPane().add(btnBorrar);
-		
-		btnGuardar = new JButton("Guardar y salir");
-		btnGuardar.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		btnGuardar.setBounds(300, 310, 120, 27);
-		frame.getContentPane().add(btnGuardar);
 
 		this.frame.setVisible(true);
 	}
@@ -99,10 +93,6 @@ public class Vista {
 	
 	public JButton getbtnBorrar() {
 		return btnBorrar;
-	}
-	
-	public JButton getbtnGuardar() {
-		return btnGuardar;
 	}
 
 	public JTextField gettextField_Mostrar() {

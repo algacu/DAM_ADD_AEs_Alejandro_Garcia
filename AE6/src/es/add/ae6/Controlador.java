@@ -14,7 +14,7 @@ public class Controlador {
 
 	private Vista vista;
 	private ActionListener actionListenerMostrar, actionListenerConsultaLibro, actionListenerAnyadir, 
-	actionListenerModificar, actionListenerBorrar, actionListenerGuardar;
+	actionListenerModificar, actionListenerBorrar;
 	String linea;
 	
 	//Método: controlador
@@ -40,7 +40,7 @@ public class Controlador {
 			public void actionPerformed(ActionEvent actionEvent) {
 				linea = Biblioteca.mostrarBD(coleccion);
 				vista.gettextArea_Texto().append("\n" + "\nMostrando base de datos completa:");
-				vista.gettextArea_Texto().append("\n" + linea);
+				vista.gettextArea_Texto().append(linea);
 			}
 		};
 		
@@ -51,13 +51,11 @@ public class Controlador {
 			public void actionPerformed(ActionEvent actionEvent) {
 				JFrame jFrame = new JFrame();
 		        String id = JOptionPane.showInputDialog(jFrame, "Introduce la ID del libro que deseas consultar");
-				
-		        int identificador = Integer.parseInt(id);
 		        
 		        if (id != null) {
-		        	linea = Biblioteca.consultarLibro(coleccion, identificador);
+		        	linea = Biblioteca.consultarLibro(coleccion, id);
 					vista.gettextArea_Texto().append("\n" + "\nLibro consultado:");
-					vista.gettextArea_Texto().append("\n" + linea);
+					vista.gettextArea_Texto().append(linea);
 		        } 
 			}
 		};
@@ -70,12 +68,22 @@ public class Controlador {
 				JFrame jFrame = new JFrame();
 		        String titulo = JOptionPane.showInputDialog(jFrame, "Título: ");
 		        String autor = JOptionPane.showInputDialog(jFrame, "Autor: ");
-		        String fechaNac = JOptionPane.showInputDialog(jFrame, "Fecha de nacimiento: ");
-		        String fechaPub = JOptionPane.showInputDialog(jFrame, "Fecha de publicación: ");
+		        String anyoNac = JOptionPane.showInputDialog(jFrame, "Fecha de nacimiento: ");
+		        String anyoPub = JOptionPane.showInputDialog(jFrame, "Fecha de publicación: ");
 		        String editorial = JOptionPane.showInputDialog(jFrame, "Editorial: ");
 		        String pags = JOptionPane.showInputDialog(jFrame, "Páginas: ");
-				linea = Biblioteca.anyadirLibro(coleccion, titulo, autor, fechaNac, fechaPub, editorial, pags);
-				vista.gettextArea_Texto().append("\n" + linea);
+
+		        if (titulo == null || autor == null || anyoNac == null || anyoPub == null || editorial == null || pags == null) {
+					vista.gettextArea_Texto().append("\n" + "\nOperación cancelada o campos vacíos. Si no quieres rellenar algún campo, introduce '-' en vez de dejarlo vacío.");
+		        }	 
+				else if (titulo.isBlank() || autor.isBlank() || anyoNac.isBlank() || anyoPub.isBlank() || editorial.isBlank() || pags.isBlank()) {
+					vista.gettextArea_Texto().append("\n" + "\nOperación cancelada o campos vacíos. Si no quieres rellenar algún campo, introduce '-' en vez de dejarlo vacío.");
+				} else { 
+					linea = Biblioteca.anyadirLibro(coleccion, titulo, autor, anyoNac, anyoPub, editorial, pags);
+					vista.gettextArea_Texto().append("\n" + "\nLibro añadido:");
+					vista.gettextArea_Texto().append(linea);
+		        }
+				
 			}
 		};
 		
@@ -86,11 +94,16 @@ public class Controlador {
 			public void actionPerformed(ActionEvent actionEvent) {
 				JFrame jFrame = new JFrame();
 		        String id = JOptionPane.showInputDialog(jFrame, "Introduce la ID del libro que deseas borrar");
-		       
-		        if (id != null) {
-		        	int identificador = Integer.parseInt(id);
-		        	linea = Biblioteca.borrarLibro(coleccion, identificador);
-					vista.gettextArea_Texto().append("\n" + linea);
+		        
+		        if (id == null) {
+					vista.gettextArea_Texto().append("\n" + "\nOperación cancelada o campo vacío. Introduce la ID del libro que deseas borrar.");
+		        }	 
+				else if (id.isBlank()) {
+					vista.gettextArea_Texto().append("\n" + "\nOperación cancelada o campo vacío. Introduce la ID del libro que deseas borrar.");
+				} else { 
+					linea = Biblioteca.borrarLibro(coleccion, id);
+		        	vista.gettextArea_Texto().append("\n" + "\nLibro borrado:");
+					vista.gettextArea_Texto().append(linea);
 		        }
 			}
 		};
@@ -104,31 +117,26 @@ public class Controlador {
 				String id = JOptionPane.showInputDialog(jFrame, "Introduce la ID del libro que deseas modificar");
 		        String titulo = JOptionPane.showInputDialog(jFrame, "Nuevo título: ");
 		        String autor = JOptionPane.showInputDialog(jFrame, "Nuevo autor: ");
-		        String fechaNac = JOptionPane.showInputDialog(jFrame, "Nuevo Año de nacimiento: ");
-		        String fechaPub = JOptionPane.showInputDialog(jFrame, "Nuevo Año de publicación: ");
+		        String anyoNac = JOptionPane.showInputDialog(jFrame, "Nuevo Año de nacimiento: ");
+		        String anyoPub = JOptionPane.showInputDialog(jFrame, "Nuevo Año de publicación: ");
 		        String editorial = JOptionPane.showInputDialog(jFrame, "Nueva Editorial: ");
 		        String pags = JOptionPane.showInputDialog(jFrame, "Nuevo Nº de páginas: ");
 		        
-		        int identificador = Integer.parseInt(id);
+		        if (id == null || titulo == null || autor == null || anyoNac == null || anyoPub == null || editorial == null || pags == null) {
+					vista.gettextArea_Texto().append("\n" + "\nOperación cancelada o campos vacíos. Si no quieres rellenar algún campo, introduce '-' en vez de dejarlo vacío.");
+		        }	 
+				else if (id.isBlank() || titulo.isBlank() || autor.isBlank() || anyoNac.isBlank() || anyoPub.isBlank() || editorial.isBlank() || pags.isBlank()) {
+					vista.gettextArea_Texto().append("\n" + "\nOperación cancelada o campos vacíos. Si no quieres rellenar algún campo, introduce '-' en vez de dejarlo vacío.");
+				} else { 
+		        	linea = Biblioteca.modificarLibro(coleccion, id, titulo, autor, anyoNac, anyoPub, editorial, pags);
+					vista.gettextArea_Texto().append("\n" + "\nLibro modificado:");
+					vista.gettextArea_Texto().append(linea);
+		        }
 		        
-				linea = Biblioteca.modificarLibro(coleccion, identificador, titulo, autor, fechaNac, fechaPub, editorial, pags);
-				vista.gettextArea_Texto().append("\n" + linea);
 			}
 		};
 		
 		vista.getbtnModificar().addActionListener(actionListenerModificar);
-		
-		
-//		actionListenerGuardar = new ActionListener() {
-//			public void actionPerformed(ActionEvent actionEvent) {
-//				Biblioteca.guardarBD(coleccion);
-//				System.exit(0);
-//			}
-//		};
-//		
-//		vista.getbtnGuardar().addActionListener(actionListenerGuardar);
-		
-		
 	}
 
 	
@@ -159,11 +167,6 @@ public class Controlador {
 		});
 		
 		vista.getbtnModificar().addActionListener((ActionListener) new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
-		
-		vista.getbtnGuardar().addActionListener((ActionListener) new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
