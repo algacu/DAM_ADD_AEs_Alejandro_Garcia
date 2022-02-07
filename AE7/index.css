@@ -1,0 +1,62 @@
+body {
+  background-image: url("./images/background.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  background-color: #1d1c19;
+  width: 100%;
+  margin: 0px auto;
+  font-family: "Roboto", sans-serif;
+  color: white;
+}
+
+h1 {
+    font-size: 80px;
+    font-family: 'Lobster', cursive;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.cajaResultados {
+    width: 48%;
+}
+
+.cajaResultados p {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.cajaResultados textarea {
+    color: white;
+    width: 70%;
+    font-family: "Roboto", sans-serif;
+    font-size: 18px;
+    background-color: transparent;
+    border: none;
+    resize: none;
+    padding-left: 10px;
+}
+
+.cajaPoster {
+    width: 48%;
+}
+
+.cajaPoster img {
+    padding-left: 65%;
+    padding-top: 1%;
+    padding-right: 30%;
+}
+
+.boton {
+    margin-left: 45.15%;
+    margin-bottom: 20px;
+}
+
+footer {
+    text-align: center;
+}

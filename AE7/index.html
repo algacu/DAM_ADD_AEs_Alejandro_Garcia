@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="index.css" />
+
+    <!-- Importo fuentes de Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Roboto:wght@100;400;900&display=swap"
+        rel="stylesheet">
+
+    <title>Cine oh! rama</title>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"> </script>
+    <script type="text/javascript">
+        function getInfo() {
+
+            //Construyo la URI de consulta a través de los parámetros de búsqueda. Esta API de cine me permite condicionar la búsqueda 
+            //según título y año de la película, además de poder elegir si quiero obtener la sinopsis completa o resumida (por defecto). 
+            var stringBusqueda = "http://www.omdbapi.com/?apikey=2ca9f486&t="
+            var tituloBusqueda = document.getElementById('busquedaTitulo').value;
+            var anyoBusqueda = document.getElementById('busquedaAnyo').value;
+            var checkbox = document.getElementById('sinopsisLarga');
+            if (checkbox.checked) {
+                stringBusqueda = "http://www.omdbapi.com/?apikey=2ca9f486&t=" + tituloBusqueda + "&y=" + anyoBusqueda + "&plot=full";
+            } else {
+                stringBusqueda = "http://www.omdbapi.com/?apikey=2ca9f486&t=" + tituloBusqueda + "&y=" + anyoBusqueda;
+            }
+
+            //Axios, para consultar a la API y seleccionar los datos deseados.
+            axios
+                .get(stringBusqueda).then(response => {
+                    console.log(response.data);
+
+                    //Comrpuebo que la búsqueda haya arrojado un resultado satisfactorio.
+                    if (response.data.Response === "False") {
+                        alert("Película no encontrada. ¿Has probado en inglés?");
+                    } else {
+                        //Muestro los campos de la película cuando la búsqueda arroja resultado.
+                        var campos = document.getElementsByClassName('campo');
+                        for (i = 0; i < campos.length; i++) {
+                            campos[i].style.display = 'block';
+                        }
+                        //Selecciono los datos de la consulta y los paso como valores a los elementos del HTML adecuados.
+                        document.getElementById('title').value = response.data.Title;
+                        document.getElementById('country').value = response.data.Country;
+                        document.getElementById('year').value = response.data.Year;
+                        document.getElementById('runtime').value = response.data.Runtime;
+                        document.getElementById('genre').value = response.data.Genre;
+                        document.getElementById('director').value = response.data.Director;
+                        document.getElementById('writer').value = response.data.Writer;
+                        document.getElementById('actors').value = response.data.Actors;
+                        document.getElementById('plot').value = response.data.Plot;
+                        document.getElementById('poster').src = response.data.Poster;
+                        document.getElementById('poster').style.display = "block";
+                        var rating = "";
+                        for (let i = 0; i < response.data.Ratings.length; i++) {
+                            rating += response.data.Ratings[i].Source + ": " + response.data.Ratings[i].Value + "\n";
+                        }
+                        document.getElementById("rating").value = rating;
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    document.getElementById('titulo').value =
+                        "ERROR EN LA CONSULTA: " + error;
+                    document.getElementById('poster').style.display = "none";
+                });
+        }
+    </script>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"> </script>
+    <script type="text/javascript">
+        function guardarInfo() {
+
+            //Declaro una variable por cada columna de mi base de datos y les asigno el valor de los elementos adecuados en el HTML.
+            var title = document.getElementById("title").value;
+            var country = document.getElementById("country").value;
+            var year = document.getElementById("year").value;
+            var runtime = document.getElementById("runtime").value;
+            var genre = document.getElementById("genre").value;
+            var director = document.getElementById("director").value;
+            var writer = document.getElementById("writer").value;
+            var actors = document.getElementById("actors").value;
+            var plot = document.getElementById("plot").value;
+            var rating = document.getElementById("rating").value;
+            var poster = document.getElementById("poster").src;
+
+            //Compruebo que el campo principal (título) no sea un string vacío.
+            if (title != "") {
+                $.ajax({
+                    type: "POST", //Método POST para enviar datos al servidor
+                    url: "archivoPHP.php", // Ruta del fichero PHP del servidor
+                    data: {
+                        // Datos a enviar. El primer parámetro debe coincidir con el especificado en el archivo PHP (Ejemplo: $title = $_POST["title"]).
+                        title: title,
+                        country: country,
+                        year: year,
+                        runtime: runtime,
+                        genre: genre,
+                        director: director,
+                        writer: writer,
+                        actors: actors,
+                        plot: plot,
+                        rating: rating,
+                        poster: poster
+                    },
+                    success: function (response) { //resultado del PHP del servidor
+                        alert(response);
+                    },
+                    error: function () {
+                        alert("ERROR");
+                    }
+                });
+            } else {
+                alert("Error al guardar. Campos vacíos.");
+            }
+        }
+    </script>
+
+    <script async src='/cdn-cgi/bm/cv/669835187/api.js'></script>
+</head>
+
+<body>
+    <header>
+        <h1>Cine oh! rama</h1>
+        <p>Busca cualquier película (works better in English)</p>
+        <div>
+            <input type="text" value="" id="busquedaTitulo" placeholder="título (en inglés)">
+            <input type="text" value="" id="busquedaAnyo" placeholder="año (opcional)" maxlength="4">
+            <input type="checkbox" id="sinopsisLarga">Sinopsis larga&nbsp</input>
+            <button id="botonBusqueda" onclick="getInfo()">Buscar</button>
+        </div>
+    </header>
+
+    <div style="display: flex">
+
+        <div class="cajaPoster">
+            <img id="poster" src="" height=auto width=auto />
+        </div>
+
+        <div class="cajaResultados">
+            <p class="campo" style="display:none">Title</p>
+            <textarea id="title" rows="1" readonly></textarea>
+            <p class="campo" style="display:none">Country</p>
+            <textarea id="country" rows="1" readonly></textarea>
+            <p class="campo" style="display:none">Year</p>
+            <textarea id="year" rows="1" readonly></textarea>
+            <p class="campo" style="display:none">Runtime</p>
+            <textarea id="runtime" rows="1" readonly></textarea>
+            <p class="campo" style="display:none">Genre</p>
+            <textarea id="genre" rows="1" readonly></textarea>
+            <p class="campo" style="display:none">Director</p>
+            <textarea id="director" rows="1" readonly></textarea>
+            <p class="campo" style="display:none">Writers</p>
+            <textarea id="writer" rows="1" readonly></textarea>
+            <p class="campo" style="display:none">Actors</p>
+            <textarea id="actors" rows="2" readonly></textarea>
+            <p class="campo" style="display:none">Plot</p>
+            <textarea id="plot" rows="4" readonly></textarea>
+            <p class="campo" style="display:none">Rating</p>
+            <textarea id="rating" rows="4" readonly></textarea>
+        </div>
+
+    </div>
+
+    <div class="boton">
+        <button id="botonGuardar" onclick="guardarInfo()">Guardar en la base de datos</button>
+    </div>
+
+    <footer>
+        <p>Alejandro García Cuesta.<br>Acceso a datos - 2º DAM Semipresencial.</p>
+    </footer>
+</body>
+
+</html>
