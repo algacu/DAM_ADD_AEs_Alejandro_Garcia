@@ -1,4 +1,4 @@
-# Actividades evaluables de Servicios y Procesos.
+# Actividades evaluables de Acceso a Datos.
 
 Segundo año CFGS Desarrollo de Aplicaciones Multiplataforma.
 Lenguaje de programación: JAVA (IDE Eclipse - Oracle).
